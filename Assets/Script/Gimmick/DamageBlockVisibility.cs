@@ -16,10 +16,5 @@ public class DamageBlockVisibility : MonoBehaviour
                 playerScript.DieAndShowRetryUI();
             }
         }
-
-        if (other.CompareTag("code"))
-        {
-           
-        }
     }
 }
