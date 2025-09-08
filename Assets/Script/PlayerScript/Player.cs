@@ -23,6 +23,9 @@ public class Player : MonoBehaviour
     public Transform respawnPoint; // リスポーン地点
     private bool isRespawning = false;
 
+    [Header("Retry UI")]
+    public GameObject retryPanel;         // UI パネルをインスペクターで設定
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -129,10 +132,11 @@ public class Player : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        transform.position = respawnPoint.position;
-        anim.SetTrigger("idle");
-        alive = true;
-        isRespawning = false;
+        //transform.position = respawnPoint.position;
+        //anim.SetTrigger("idle");
+        //alive = true;
+        //isRespawning = false;
+        retryPanel.SetActive(true);
     }
 
     // デバッグ用：SceneビューでRayを表示

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI; // ← Text を使うために必要
 
 public class ObjectPlacer2D : MonoBehaviour
 {
@@ -14,15 +14,14 @@ public class ObjectPlacer2D : MonoBehaviour
     public bool setColliderAsTrigger = false;
 
     [Header("ルール設定")]
-    public bool requirePowerPathForPlacement = true; // 通電チェック無効化済みですが残してあります
+    public bool requirePowerPathForPlacement = true;
 
     [Header("初期オブジェクトの削除")]
     public bool allowDeletingInitialObjects = true;
 
     [Header("UI参照")]
-    public TextMeshProUGUI remainingBlocksText;
+    public Text remainingBlocksText; // ← TMP から Text に変更
 
-    // Vector2座標 → (GameObject, canDelete, isInitialObject)
     private Dictionary<Vector2, (GameObject obj, bool canDelete, bool isInitialObject)> placedObjects
         = new Dictionary<Vector2, (GameObject, bool, bool)>();
 
@@ -67,8 +66,6 @@ public class ObjectPlacer2D : MonoBehaviour
                 Vector2 gridPos = ToGridPosition(obj.transform.position);
                 if (!placedObjects.ContainsKey(gridPos))
                 {
-                    // 初期オブジェクトは allowDeletingInitialObjects の値で削除可能か判定し、
-                    // isInitialObjectフラグはtrueにセット
                     placedObjects.Add(gridPos, (obj, allowDeletingInitialObjects, true));
                 }
                 else
@@ -88,7 +85,6 @@ public class ObjectPlacer2D : MonoBehaviour
         Vector2 gridPos = ToGridPosition(obj.transform.position);
         if (!placedObjects.ContainsKey(gridPos))
         {
-            // こちらは初期オブジェクト扱いとして登録
             placedObjects.Add(gridPos, (obj, allowDeletingInitialObjects, true));
             Debug.Log($"AutoCreateGimmickで登録: {gridPos}");
         }
@@ -102,7 +98,6 @@ public class ObjectPlacer2D : MonoBehaviour
 
     void Update()
     {
-        // Cキーでゲーム中に配置したオブジェクトだけ回収
         if (Input.GetKeyDown(KeyCode.C))
         {
             CollectAllPlacedObjects();
@@ -192,7 +187,6 @@ public class ObjectPlacer2D : MonoBehaviour
                 collider.isTrigger = setColliderAsTrigger;
             }
 
-            // 新規に配置したものは削除可能、かつ初期オブジェクトではないのでfalse
             placedObjects.Add(gridPos, (placedObject, true, false));
 
             Debug.Log($"オブジェクトを配置しました at {gridPos}");
@@ -235,12 +229,11 @@ public class ObjectPlacer2D : MonoBehaviour
     private void UpdateUI()
     {
         if (remainingBlocksText != null)
-            remainingBlocksText.text = $" {maxBlocks - CurrentUsedBlockCount}";
+            remainingBlocksText.text = $"配置可能ブロック： {maxBlocks - CurrentUsedBlockCount}";
     }
 
     public int CurrentUsedBlockCount => CountDeletableObjects();
 
-    // Cキーでゲーム中に新規配置したオブジェクトのみ回収する
     private void CollectAllPlacedObjects()
     {
         List<Vector2> keysToRemove = new List<Vector2>();
@@ -249,7 +242,7 @@ public class ObjectPlacer2D : MonoBehaviour
         foreach (var kvp in placedObjects)
         {
             var (obj, canDelete, isInitial) = kvp.Value;
-            if (!isInitial) // 初期オブジェクトは回収しない
+            if (!isInitial)
             {
                 Destroy(obj);
                 keysToRemove.Add(kvp.Key);
@@ -264,7 +257,6 @@ public class ObjectPlacer2D : MonoBehaviour
 
         if (collectedCount > 0)
         {
-            //AddBlockCapacity(collectedCount);
             Debug.Log($"Cキーで{collectedCount}個のオブジェクトを回収しました");
         }
         else
