@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // ← Text を使うために必要
+using UnityEngine.UI;
 
 public class ObjectPlacer2D : MonoBehaviour
 {
@@ -20,7 +20,7 @@ public class ObjectPlacer2D : MonoBehaviour
     public bool allowDeletingInitialObjects = true;
 
     [Header("UI参照")]
-    public Text remainingBlocksText; // ← TMP から Text に変更
+    public Text remainingBlocksText;
 
     private Dictionary<Vector2, (GameObject obj, bool canDelete, bool isInitialObject)> placedObjects
         = new Dictionary<Vector2, (GameObject, bool, bool)>();
@@ -38,6 +38,10 @@ public class ObjectPlacer2D : MonoBehaviour
 
     [Header("識別子")]
     public string placerId = "Placer_1";
+
+    [Header("クールダウン設定")] // ← クールダウン設定の見出し
+    public float collectCooldown = 1f; // ← クールタイムの秒数（インスペクター調整可能）
+    private float lastCollectTime = -Mathf.Infinity; // ← 最後に回収した時間
 
     public static ObjectPlacer2D FindPlacerById(string id)
     {
@@ -100,7 +104,16 @@ public class ObjectPlacer2D : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
-            CollectAllPlacedObjects();
+            // クールタイム中かどうかチェック
+            if (Time.time - lastCollectTime >= collectCooldown)
+            {
+                CollectAllPlacedObjects();
+                lastCollectTime = Time.time;
+            }
+            else
+            {
+                Debug.Log("回収はクールタイム中です");
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
