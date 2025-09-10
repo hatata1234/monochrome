@@ -50,11 +50,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2053518115102101881, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.25
+      value: -5.3
       objectReference: {fileID: 0}
     - target: {fileID: 2053518115102101881, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.97
+      value: 3.9
       objectReference: {fileID: 0}
     - target: {fileID: 2053518115102101881, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -119,6 +119,10 @@ PrefabInstance:
     - target: {fileID: 3576088135815142937, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
       propertyPath: m_LocalPosition.y
       value: -2.88
+      objectReference: {fileID: 0}
+    - target: {fileID: 4836269389687995142, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
+      propertyPath: m_Size.x
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4851634110196171245, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
       propertyPath: m_Color.b
@@ -234,6 +238,9 @@ PrefabInstance:
       addedObject: {fileID: 3817923311726231921}
     - targetCorrespondingSourceObject: {fileID: 2053518115102101880, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 7590526500524805790}
+    - targetCorrespondingSourceObject: {fileID: 2053518115102101880, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5209918948021503324}
   m_SourcePrefab: {fileID: 100100000, guid: 521aebf732701414da1c25c63cb8390b, type: 3}
 --- !u!4 &5407894459507067485 stripped
@@ -259,7 +266,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movePower: 10
-  KickBoardMovePower: 15
   jumpPower: 20
   groundCheckPoint: {fileID: 5407894459507067485}
   groundCheckRadius: 0.2
@@ -267,6 +273,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   respawnPoint: {fileID: 0}
+  retryPanel: {fileID: 0}
+--- !u!114 &7590526500524805790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7409527176871363900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af029ddf732d4094cb3b26f4c137dad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  object_Create_Mode_Area: {fileID: 0}
 --- !u!58 &5209918948021503324
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -274,7 +294,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7409527176871363900}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
