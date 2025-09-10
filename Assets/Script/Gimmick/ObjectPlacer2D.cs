@@ -104,6 +104,7 @@ public class ObjectPlacer2D : MonoBehaviour
     {
         // --- ポーズ中なら一切のクリック処理を無効にする ---
         if (PauseManager.IsPaused) return;
+        if (Time.timeScale == 0) return;
 
         if (Input.GetKeyDown(KeyCode.C))
         {

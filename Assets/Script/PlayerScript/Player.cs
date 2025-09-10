@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     {
         // --- ポーズ中は一切の入力処理をスキップ ---
         if (PauseManager.IsPaused) return;
+        if (Time.timeScale == 0) return;
 
         Restart();
 

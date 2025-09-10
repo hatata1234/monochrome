@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Tutorial_SetActive : MonoBehaviour
 {
-    public GameObject[] gameObjects; // 対象オブジェクト
-    private bool[] originalStates;   // 各オブジェクトの初期状態を記録
+    public GameObject[] gameObjects; // 表示するUIなど
+    private bool[] originalStates;
+    public float reactCooldown = 2f; // 再反応までの待ち時間
+    private bool canReact = true;
 
     private void Start()
     {
-        // 初期状態の保存
         originalStates = new bool[gameObjects.Length];
         for (int i = 0; i < gameObjects.Length; i++)
         {
@@ -20,31 +21,37 @@ public class Tutorial_SetActive : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (canReact && collision.CompareTag("Player"))
         {
-            for (int i = 0; i < gameObjects.Length; i++)
-            {
-                if (gameObjects[i] != null)
-                {
-                    // 状態を反転
-                    gameObjects[i].SetActive(!gameObjects[i].activeSelf);
-                }
-            }
+            ToggleUI(true); // UIを表示
+            canReact = false;
+            StartCoroutine(ReactCooldown());
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    // UIを開いたり閉じたりする
+    public void ToggleUI(bool isOpen)
     {
-        if (collision.CompareTag("Player"))
+        for (int i = 0; i < gameObjects.Length; i++)
         {
-            for (int i = 0; i < gameObjects.Length; i++)
-            {
-                if (gameObjects[i] != null)
-                {
-                    // 元の状態に戻す
-                    gameObjects[i].SetActive(originalStates[i]);
-                }
-            }
+            if (gameObjects[i] != null)
+                gameObjects[i].SetActive(isOpen);
         }
+
+        // UIを開いてる間は時間停止
+        Time.timeScale = isOpen ? 0f : 1f;
+    }
+
+    // UIの閉じるボタンから呼ばれる
+    public void OnCloseButton()
+    {
+        ToggleUI(false);
+    }
+
+    // 一定時間経つまで再反応できないようにする
+    private IEnumerator ReactCooldown()
+    {
+        yield return new WaitForSecondsRealtime(reactCooldown); // TimeScaleの影響を受けない
+        canReact = true;
     }
 }

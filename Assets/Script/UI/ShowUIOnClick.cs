@@ -19,6 +19,7 @@ public class ShowUIOnClick : MonoBehaviour
     {
         if (targetUI != null)
         {
+            Time.timeScale = 1;
             targetUI.SetActive(false);
         }
     }
