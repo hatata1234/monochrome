@@ -34,6 +34,9 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        // --- ポーズ中は一切の入力処理をスキップ ---
+        if (PauseManager.IsPaused) return;
+
         Restart();
 
         if (alive)

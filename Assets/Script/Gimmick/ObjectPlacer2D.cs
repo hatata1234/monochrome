@@ -102,6 +102,9 @@ public class ObjectPlacer2D : MonoBehaviour
 
     void Update()
     {
+        // --- ポーズ中なら一切のクリック処理を無効にする ---
+        if (PauseManager.IsPaused) return;
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             // クールタイム中かどうかチェック
