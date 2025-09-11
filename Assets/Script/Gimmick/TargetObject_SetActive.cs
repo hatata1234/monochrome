@@ -5,6 +5,9 @@ public class TargetObject_SetActive : MonoBehaviour
     public GameObject[] gameObjects; // 対象オブジェクト
     private bool[] originalStates;   // 各オブジェクトの初期状態を記録
 
+    [Tooltip("このタグを持つオブジェクトがトリガーに入ったときに処理されます")]
+    public string targetTag = "Code"; // 条件判定に使うタグをインスペクターで設定可能
+
     private void Start()
     {
         // 初期状態の保存
@@ -18,7 +21,7 @@ public class TargetObject_SetActive : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Code"))
+        if (collision.CompareTag(targetTag))
         {
             for (int i = 0; i < gameObjects.Length; i++)
             {
@@ -33,7 +36,7 @@ public class TargetObject_SetActive : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Code"))
+        if (collision.CompareTag(targetTag))
         {
             for (int i = 0; i < gameObjects.Length; i++)
             {
