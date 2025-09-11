@@ -4,6 +4,7 @@ using UnityEngine;
 public class CreateMode : MonoBehaviour
 {
     public GameObject object_Create_Mode_Area;
+    public GameObject object1;
     private bool isActive = false;
 
     void Update()
@@ -12,6 +13,7 @@ public class CreateMode : MonoBehaviour
         {
             isActive = !isActive; // ó‘Ô‚ğƒgƒOƒ‹
             object_Create_Mode_Area.SetActive(isActive); // ó‘Ô‚É‡‚í‚¹‚Ä•\¦Ø‚è‘Ö‚¦
+            object1.SetActive(!isActive);
         }
     }
 }
