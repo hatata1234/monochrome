@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2818520962802196194
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4822482727600869059}
+  - component: {fileID: 3955600888187330620}
+  - component: {fileID: 8096042744773332581}
+  - component: {fileID: 5628566070759118650}
+  m_Layer: 0
+  m_Name: UI_Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4822482727600869059
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2818520962802196194}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3955600888187330620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2818520962802196194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c002e2123d156445b11407338f6ee3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8096042744773332581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2818520962802196194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33aaaf747867d14498da38ffe1705b86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseMenuUI: {fileID: 3730120272233322455, guid: 1cb6950a5ba3452499883407d0b4a3f0, type: 3}
+  TutorialUI: {fileID: 3891530376796343547, guid: 54547b854dd2a024897167329b701877, type: 3}
+  OperateUI: {fileID: 7990963405319852281, guid: dbfebfbcde92f1043be46ffc91b452c6, type: 3}
+  SoundUI: {fileID: 3788685767185389747, guid: e43278ecc3bea8e4aa77841b5af3e5ae, type: 3}
+  TutorialUI1: {fileID: 4729408585945205520, guid: 66ffbb27198f7f54eb9fcc1193474220, type: 3}
+  TutorialUI2: {fileID: 4695230021476130135, guid: 0193db2a8e0521340a6698f1fed5eae1, type: 3}
+  TutorialUI3: {fileID: 476289024515231277, guid: da1d5a95690bb094c9e155c771602391, type: 3}
+  Tutorial_ClearUI1: {fileID: 0}
+  Tutorial_ClearUI2: {fileID: 0}
+  Tutorial_ClearUI3: {fileID: 0}
+--- !u!114 &5628566070759118650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2818520962802196194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 435b5e43baf7f0e4ea38696799b25eac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetUI: {fileID: 0}
+  PauseUI: {fileID: 0}
+  TutorialUI: {fileID: 0}
+  OperateUI: {fileID: 0}
+  SoundUI: {fileID: 0}
