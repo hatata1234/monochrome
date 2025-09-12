@@ -59894,6 +59894,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1150789630}
+    - target: {fileID: 2988273531463555161, guid: 54547b854dd2a024897167329b701877, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Pause_Tutorial2
+      objectReference: {fileID: 0}
     - target: {fileID: 3055743736587118533, guid: 54547b854dd2a024897167329b701877, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -59978,10 +59982,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutirialsMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 3891530376796343547, guid: 54547b854dd2a024897167329b701877, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4498492929389444179, guid: 54547b854dd2a024897167329b701877, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1150789630}
+    - target: {fileID: 4498492929389444179, guid: 54547b854dd2a024897167329b701877, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Pause_Tutorial1
+      objectReference: {fileID: 0}
     - target: {fileID: 5087825495386898396, guid: 54547b854dd2a024897167329b701877, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -59990,6 +60002,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1150789630}
+    - target: {fileID: 6172708321707845528, guid: 54547b854dd2a024897167329b701877, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Pause_Tutorial3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -60192,6 +60208,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tutorial_Panel 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4729408585945205520, guid: 66ffbb27198f7f54eb9fcc1193474220, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -60373,23 +60393,35 @@ PrefabInstance:
     - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
       propertyPath: PauseUI
       value: 
-      objectReference: {fileID: 1901052381}
+      objectReference: {fileID: 0}
     - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
       propertyPath: SoundUI
       value: 
-      objectReference: {fileID: 854717314}
+      objectReference: {fileID: 0}
     - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
       propertyPath: targetUI
       value: 
-      objectReference: {fileID: 1901052381}
+      objectReference: {fileID: 0}
     - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
       propertyPath: OperateUI
       value: 
-      objectReference: {fileID: 1528885016}
+      objectReference: {fileID: 0}
     - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
       propertyPath: TutorialUI
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
+      propertyPath: Pause_TutorialUI1
+      value: 
       objectReference: {fileID: 1901052381}
+    - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
+      propertyPath: Pause_TutorialUI2
+      value: 
+      objectReference: {fileID: 1528885016}
+    - target: {fileID: 5628566070759118650, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
+      propertyPath: Pause_TutorialUI3
+      value: 
+      objectReference: {fileID: 854717314}
     - target: {fileID: 8096042744773332581, guid: 0838e689b5e1c4d49b7ac6dd20b05dba, type: 3}
       propertyPath: SoundUI
       value: 
