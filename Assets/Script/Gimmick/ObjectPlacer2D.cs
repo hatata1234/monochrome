@@ -21,6 +21,7 @@ public class ObjectPlacer2D : MonoBehaviour
 
     [Header("UI参照")]
     public Text remainingBlocksText;
+    public Text totalPlacedText;
 
     private Dictionary<Vector2, (GameObject obj, bool canDelete, bool isInitialObject)> placedObjects
         = new Dictionary<Vector2, (GameObject, bool, bool)>();
@@ -42,6 +43,11 @@ public class ObjectPlacer2D : MonoBehaviour
     [Header("クールダウン設定")] // ← クールダウン設定の見出し
     public float collectCooldown = 1f; // ← クールタイムの秒数（インスペクター調整可能）
     private float lastCollectTime = -Mathf.Infinity; // ← 最後に回収した時間
+
+    private int totalPlacedCount = 0;
+    public int TotalPlacedCount => totalPlacedCount;
+
+
 
     public static ObjectPlacer2D FindPlacerById(string id)
     {
@@ -206,7 +212,9 @@ public class ObjectPlacer2D : MonoBehaviour
 
             placedObjects.Add(gridPos, (placedObject, true, false));
 
-            Debug.Log($"オブジェクトを配置しました at {gridPos}");
+            totalPlacedCount++; // ← 累積カウントを追加
+            Debug.Log($"オブジェクトを配置しました at {gridPos}（累積: {totalPlacedCount}）");
+
             UpdateUI();
         }
         else
@@ -247,6 +255,9 @@ public class ObjectPlacer2D : MonoBehaviour
     {
         if (remainingBlocksText != null)
             remainingBlocksText.text = $"配置可能ブロック： {maxBlocks - CurrentUsedBlockCount}";
+
+        if (totalPlacedText != null)
+            totalPlacedText.text = $"累積配置数： {totalPlacedCount}";
     }
 
     public int CurrentUsedBlockCount => CountDeletableObjects();
