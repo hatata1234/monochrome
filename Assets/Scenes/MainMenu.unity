@@ -2740,7 +2740,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 985774929}
         m_TargetAssemblyTypeName: ButtonSceneChanger, Assembly-CSharp
-        m_MethodName: ChangeGameScene
+        m_MethodName: Stage1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2888,7 +2888,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 985774929}
         m_TargetAssemblyTypeName: ButtonSceneChanger, Assembly-CSharp
-        m_MethodName: ChangeGameScene
+        m_MethodName: Stage3
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5309,7 +5309,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 985774929}
         m_TargetAssemblyTypeName: ButtonSceneChanger, Assembly-CSharp
-        m_MethodName: ChangeGameScene
+        m_MethodName: Stage2
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

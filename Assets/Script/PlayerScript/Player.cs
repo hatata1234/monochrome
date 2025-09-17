@@ -124,13 +124,13 @@ public class Player : MonoBehaviour
         isRespawning = true;
         alive = false;
         anim.SetTrigger("die");
-
         StartCoroutine(WaitAndShowRetryUI());
     }
 
     private IEnumerator WaitAndShowRetryUI()
     {
         yield return new WaitForSeconds(1f); // €–SƒAƒjƒ‚É‡‚í‚¹‚Ä
+        Time.timeScale = 0f;
         RespawnPlayer();
     }
 
