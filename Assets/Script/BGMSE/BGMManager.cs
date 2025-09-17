@@ -5,18 +5,21 @@ using UnityEngine.UI;
 public class AudioSettings : MonoBehaviour
 {
     [Header("BGM")]
-    public Slider bgmSlider;
+    public Slider bgmSlider; // Inspector でアサイン
     private AudioSource bgmAudioSource;
-
 
     private void Start()
     {
-        bgmSlider.onValueChanged.AddListener(value => bgmAudioSource.volume = value);
+        // AudioSource を取得
+        bgmAudioSource = GetComponent<AudioSource>();
 
-    }
+        // 初期値を反映
+        bgmAudioSource.volume = bgmSlider.value;
 
-    private void Update()
-    {
-
+        // スライダー操作で音量変更
+        bgmSlider.onValueChanged.AddListener(value =>
+        {
+            bgmAudioSource.volume = value;
+        });
     }
 }
