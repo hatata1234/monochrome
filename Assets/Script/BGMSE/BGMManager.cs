@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class AudioSettings : MonoBehaviour
+public class BGMManager : MonoBehaviour
 {
     [Header("BGM")]
     public Slider bgmSlider; // Inspector Ç≈ÉAÉTÉCÉì
