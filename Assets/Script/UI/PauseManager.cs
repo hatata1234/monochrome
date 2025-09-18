@@ -21,6 +21,7 @@ public class PauseManager : MonoBehaviour
 
     //Retry
     public GameObject RetryUI;
+    //Goal
 
     [SerializeField]private AudioClip pauseSE;
 

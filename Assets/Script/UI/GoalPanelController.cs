@@ -14,15 +14,22 @@ public class GoalPanelController : MonoBehaviour
     {
         Timer.Instance.StopTimer();
         float elapsedSeconds = Timer.Instance.GetElapsedTime();
-        timeText.text = $"タイム: {Timer.Instance.GetFormattedTime()}";
+        string formattedTime = Timer.Instance.GetFormattedTime();
 
         ObjectPlacer2D placer = ObjectPlacer2D.FindPlacerById(placerId);
         int count = placer != null ? placer.TotalPlacedCount : 0;
-        resultPlacedText.text = $"累積配置数: {count}";
 
+        // ★/☆ 条件表示付きテキスト
+        timeText.text = $"{(elapsedSeconds <= 60f ? "★" : "☆")}";
+        //timeText.text = $" {(elapsedSeconds <= 60f ? "★" : "☆")}( タイム: {formattedTime} ";
+        resultPlacedText.text = $"{(count <= 10 ? "★" : "☆")}";
+        //resultPlacedText.text = $" {(count <= 10 ? "★" : "☆")}( 累積配置数: {count}) ";
+
+        // 総合評価
         string stars = GetEvaluation(count, elapsedSeconds);
         evaluationText.text = $"評価: {stars}";
 
+        // スコア保存
         int starCount = CountStars(stars);
         GameManager.Instance.UpdateHighestScore(stageId, starCount);
 
