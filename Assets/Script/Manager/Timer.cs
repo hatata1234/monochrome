@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Timer : MonoBehaviour
@@ -13,9 +11,13 @@ public class Timer : MonoBehaviour
     void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
+        {
             Destroy(gameObject);
+        }
     }
 
     public void StartTimer()
@@ -36,10 +38,7 @@ public class Timer : MonoBehaviour
 
     public float GetElapsedTime()
     {
-        if (isRunning)
-            return Time.time - startTime;
-        else
-            return elapsedWhenStopped;
+        return isRunning ? Time.time - startTime : elapsedWhenStopped;
     }
 
     public string GetFormattedTime()
