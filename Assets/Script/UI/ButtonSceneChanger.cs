@@ -11,4 +11,17 @@ public class ButtonSceneChanger : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void Stage1()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+    public void Stage2()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+    public void Stage3()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
 }

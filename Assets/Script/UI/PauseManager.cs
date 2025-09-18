@@ -19,12 +19,16 @@ public class PauseManager : MonoBehaviour
     public GameObject Tutorial_ClearUI2;
     public GameObject Tutorial_ClearUI3;
 
+    //Retry
+    public GameObject RetryUI;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
 
-            if (TutorialUI.activeSelf || OperateUI.activeSelf || SoundUI.activeSelf || TutorialUI1.activeSelf || TutorialUI2.activeSelf || TutorialUI3.activeSelf || Tutorial_ClearUI1.activeSelf || Tutorial_ClearUI2.activeSelf || Tutorial_ClearUI3.activeSelf)
+            if (TutorialUI.activeSelf || OperateUI.activeSelf || SoundUI.activeSelf || TutorialUI1.activeSelf || TutorialUI2.activeSelf || TutorialUI3.activeSelf 
+                || Tutorial_ClearUI1.activeSelf || Tutorial_ClearUI2.activeSelf || Tutorial_ClearUI3.activeSelf || RetryUI.activeSelf)
             {
                 if (TutorialUI.activeSelf) CloseTutorial();
                 if (OperateUI.activeSelf) CloseOperate();
