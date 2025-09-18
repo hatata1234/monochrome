@@ -22,6 +22,8 @@ public class PauseManager : MonoBehaviour
     //Retry
     public GameObject RetryUI;
 
+    [SerializeField]private AudioClip pauseSE;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -42,7 +44,10 @@ public class PauseManager : MonoBehaviour
                 if (IsPaused)
                     Resume();
                 else
+                {
                     Pause();
+                    //AudioManager.Instance.PlaySE(pauseSE);
+                }     
             }
         }
     }
