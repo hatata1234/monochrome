@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     private Dictionary<string, int> highestScores = new Dictionary<string, int>();
+    private HashSet<string> clearedStages = new HashSet<string>();
 
     void Awake()
     {
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // シーン切り替え時にタイマー起動をチェック
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -21,21 +25,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
+    // ★ タイマーをシーン開始時に起動（ステージシーンのみなど条件付きでOK）
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name.StartsWith("Game"))
+        // 必要なら条件を追加（例：scene.name.StartsWith("Stage") など）
+        if (Timer.Instance != null)
         {
-            Timer.Instance?.StartTimer();
+            Timer.Instance.StartTimer();
         }
     }
 
@@ -45,10 +41,20 @@ public class GameManager : MonoBehaviour
         {
             highestScores[stageId] = stars;
         }
+
+        if (!clearedStages.Contains(stageId))
+        {
+            clearedStages.Add(stageId);
+        }
     }
 
     public int GetHighestScore(string stageId)
     {
         return highestScores.TryGetValue(stageId, out int score) ? score : 0;
+    }
+
+    public bool IsStageCleared(string stageId)
+    {
+        return clearedStages.Contains(stageId);
     }
 }
