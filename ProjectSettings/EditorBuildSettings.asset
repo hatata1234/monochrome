@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 04e7a12fe91f6304a95ddff2b9c2f034
+  - enabled: 1
+    path: Assets/Scenes/TestHata.unity
+    guid: 1dee138cc63466740be86fd74744c2a4
   m_configObjects: {}
