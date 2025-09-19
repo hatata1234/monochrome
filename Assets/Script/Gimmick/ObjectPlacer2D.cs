@@ -35,7 +35,8 @@ public class ObjectPlacer2D : MonoBehaviour
 
     [Header("プレイヤー周囲の配置制限")]
     public Transform playerTransform;
-    public int playerNoPlacementRadius = 1;
+    public int noPlacementWidth = 3;  // X方向のブロック数（片側で1.5分 = 中心±1.5）
+    public int noPlacementHeight = 2; // Y方向のブロック数（片側で1分 = 中心±1）
 
     [Header("識別子")]
     public string placerId = "Placer_1";
@@ -227,13 +228,30 @@ public class ObjectPlacer2D : MonoBehaviour
     {
         if (playerTransform == null) return false;
 
-        Vector2 playerGrid = ToGridPosition(playerTransform.position);
+        Collider2D playerCollider = playerTransform.GetComponent<Collider2D>();
+        if (playerCollider == null) return false;
 
-        float dx = Mathf.Abs(gridPos.x - playerGrid.x);
-        float dy = Mathf.Abs(gridPos.y - playerGrid.y);
+        Vector2 center = playerCollider.bounds.center;
 
-        return dx <= playerNoPlacementRadius && dy <= playerNoPlacementRadius;
+        Vector2 gridCenter = ToGridPosition(center);
+
+        float dx = Mathf.Abs(gridPos.x - gridCenter.x);
+        float dy = Mathf.Abs(gridPos.y - gridCenter.y);
+
+        return dx <= noPlacementWidth * 0.5f && dy <= noPlacementHeight * 0.5f;
     }
+    private void OnDrawGizmosSelected()
+{
+    if (playerTransform == null) return;
+
+    Collider2D playerCollider = playerTransform.GetComponent<Collider2D>();
+    if (playerCollider == null) return;
+
+    Vector2 center = ToGridPosition(playerCollider.bounds.center);
+
+    Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
+    Gizmos.DrawCube(center, new Vector3(noPlacementWidth, noPlacementHeight, 0f));
+}
 
     private int CountDeletableObjects()
     {

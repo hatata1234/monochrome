@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float movePower = 10f;
-    public float jumpPower = 20f; // Rigidbody2DのGravity Scaleは5推奨
+    public float jumpPower = 20f;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -14,17 +14,17 @@ public class Player : MonoBehaviour
     private bool isJumping = false;
     private bool alive = true;
 
-    // 地面判定用（Raycast）
+    // 地面判定（Raycast）
     private bool isGrounded = false;
-    public Transform groundCheckPoint;    // 足元の判定ポイント
+    public Transform groundCheckPoint;
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
-    public Transform respawnPoint; // リスポーン地点
+    public Transform respawnPoint;
     private bool isRespawning = false;
 
     [Header("Retry UI")]
-    public GameObject retryPanel;         // UI パネルをインスペクターで設定
+    public GameObject retryPanel;
 
     void Start()
     {
@@ -34,10 +34,15 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // --- ポーズ中は一切の入力処理をスキップ ---
-        if (PauseManager.IsPaused) return;
-        if (Time.timeScale == 0) return;
+        if (PauseManager.IsPaused || Time.timeScale == 0) return;
 
+        // 1. 接地判定は最初に行う
+        isGrounded = Physics2D.Raycast(groundCheckPoint.position, Vector2.down, groundCheckRadius, groundLayer);
+
+        // 2. アニメーションフラグ更新
+        anim.SetBool("isJump", !isGrounded);
+
+        // 3. 各処理
         Restart();
 
         if (alive)
@@ -46,14 +51,6 @@ public class Player : MonoBehaviour
             Run();
             Jump();
         }
-
-        // 地面に接地しているか判定（Raycastを使用）
-        isGrounded = Physics2D.Raycast(groundCheckPoint.position, Vector2.down, groundCheckRadius, groundLayer);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        anim.SetBool("isJump", false);
     }
 
     void Run()
@@ -68,7 +65,7 @@ public class Player : MonoBehaviour
             direction = -1;
             moveVelocity = Vector3.left;
             transform.localScale = new Vector3(direction, 1, 1);
-            if (!anim.GetBool("isJump"))
+            if (isGrounded)
                 anim.SetBool("isRun", true);
         }
         else if (h > 0)
@@ -76,7 +73,7 @@ public class Player : MonoBehaviour
             direction = 1;
             moveVelocity = Vector3.right;
             transform.localScale = new Vector3(direction, 1, 1);
-            if (!anim.GetBool("isJump") && isGrounded)
+            if (isGrounded)
                 anim.SetBool("isRun", true);
         }
 
@@ -87,16 +84,9 @@ public class Player : MonoBehaviour
     {
         if ((Input.GetButtonDown("Jump") || Input.GetAxisRaw("Vertical") > 0) && isGrounded)
         {
-            isJumping = true;
-            anim.SetBool("isJump", true);
+            rb.velocity = Vector2.zero;
+            rb.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
         }
-
-        if (!isJumping)
-            return;
-
-        rb.velocity = Vector2.zero;
-        rb.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
-        isJumping = false;
     }
 
     void Die()
@@ -129,21 +119,16 @@ public class Player : MonoBehaviour
 
     private IEnumerator WaitAndShowRetryUI()
     {
-        yield return new WaitForSeconds(1f); // 死亡アニメに合わせて
+        yield return new WaitForSeconds(1f);
         Time.timeScale = 0f;
         RespawnPlayer();
     }
 
     public void RespawnPlayer()
     {
-        //transform.position = respawnPoint.position;
-        //anim.SetTrigger("idle");
-        //alive = true;
-        //isRespawning = false;
         retryPanel.SetActive(true);
     }
 
-    // デバッグ用：SceneビューでRayを表示
     void OnDrawGizmosSelected()
     {
         if (groundCheckPoint != null)
