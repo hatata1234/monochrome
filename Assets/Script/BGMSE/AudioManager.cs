@@ -1,29 +1,35 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    public static AudioManager Instans;
 
-    [Header("BGM Settings")]
-    public AudioSource bgmSource;         // BGM 用 AudioSource
-    public Slider bgmSlider;              // BGM 音量用スライダー
+    [Header("Audio Sources")]
+    public AudioSource BGMSource;
+    public AudioSource SESource;
 
+    [Header("Audio Mixer")]
+    public AudioMixer mixer;
 
-    [Header("SE Settings")]
-    public GameObject seSourcePrefab;     // SE 再生用プレハブ（AudioSource付き）
-    public Slider seSlider;               // SE 音量用スライダー
+    [Header("Sliders")]
+    public Slider BGMslider;
+    public Slider SEslider;
 
-    private List<AudioSource> seSources = new List<AudioSource>(); // 再生中SEリスト
-    private float seVolume = 1f;          // SE音量
+    [Header("Audio clips")]
+    public AudioClip[] BGMs;
+    public AudioClip[] SEs;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instans == null)
         {
-            Instance = this;
+            Instans = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -33,66 +39,69 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        // BGMスライダー設定
-        if (bgmSlider != null)
-        {
-            bgmSlider.onValueChanged.AddListener(SetBGMVolume);
-            bgmSlider.value = bgmSource.volume; // 初期値
-        }
+        // スライダー初期化
+        BGMslider.value = Update_Volume.BGMsliderValue;
+        SEslider.value = Update_Volume.SEsliderValue;
 
-        // SEスライダー設定
-        if (seSlider != null)
-        {
-            seSlider.onValueChanged.AddListener(SetSEVolume);
-            seSlider.value = seVolume; // 初期値
-        }
+        BGMslider.onValueChanged.AddListener(SetBGMVolume);
+        SEslider.onValueChanged.AddListener(SetSEVolume);
 
-        // スタート時にBGMを流す
-        if (bgmSource != null && bgmSource.clip != null)
+        // 音量を反映
+        SetBGMVolume(BGMslider.value);
+        SetSEVolume(SEslider.value);
+
+        // BGM 再生
+        if (BGMs.Length > 0)
         {
-            bgmSource.loop = true;
-            bgmSource.Play();
+            BGMSource.clip = BGMs[0];
+            BGMSource.loop = true;
+            BGMSource.Play();
         }
     }
 
-    // BGM 再生
-    public void PlayBGM(AudioClip clip)
+    // シーン切り替え時にスライダー再リンク
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (clip == null) return;
-        bgmSource.clip = clip;
-        bgmSource.loop = true;
-        bgmSource.Play();
-    }
+        var bgmSliderObj = GameObject.Find("BGM_Slider");
+        var seSliderObj = GameObject.Find("SE_Slider");
 
-    // SE 再生
-    public void PlaySE(AudioClip clip)
-    {
-        if (clip == null || seSourcePrefab == null) return;
-
-        GameObject seObj = Instantiate(seSourcePrefab, transform);
-        AudioSource source = seObj.GetComponent<AudioSource>();
-        source.clip = clip;
-        source.volume = seVolume;
-        source.Play();
-        seSources.Add(source);
-
-        Destroy(seObj, clip.length);
-    }
-
-    // 🔊 BGM 音量変更
-    public void SetBGMVolume(float volume)
-    {
-        bgmSource.volume = volume;
-    }
-
-    // 🔊 SE 音量変更
-    public void SetSEVolume(float volume)
-    {
-        seVolume = volume;
-        // 再生中のSEにも反映
-        foreach (var src in seSources)
+        if (bgmSliderObj != null)
         {
-            if (src != null) src.volume = seVolume;
+            BGMslider = bgmSliderObj.GetComponent<Slider>();
+            BGMslider.value = Update_Volume.BGMsliderValue;
+            BGMslider.onValueChanged.RemoveAllListeners();
+            BGMslider.onValueChanged.AddListener(SetBGMVolume);
         }
+
+        if (seSliderObj != null)
+        {
+            SEslider = seSliderObj.GetComponent<Slider>();
+            SEslider.value = Update_Volume.SEsliderValue;
+            SEslider.onValueChanged.RemoveAllListeners();
+            SEslider.onValueChanged.AddListener(SetSEVolume);
+        }
+    }
+
+    // AudioMixer に反映
+    public void SetBGMVolume(float value)
+    {
+        float dB = (value <= 0.0001f) ? -80f : Mathf.Log10(value) * 20f;
+        mixer.SetFloat("BGMVolume", dB);
+        Update_Volume.BGMsliderValue = value;
+    }
+
+    public void SetSEVolume(float value)
+    {
+        float dB = (value <= 0.0001f) ? -80f : Mathf.Log10(value) * 20f;
+        mixer.SetFloat("SEVolume", dB);
+        Update_Volume.SEsliderValue = value;
+    }
+
+    public void PlaySE(int index)
+    {
+        if (index >= 0 && index < SEs.Length)
+            SESource.PlayOneShot(SEs[index]);
     }
 }
+
+

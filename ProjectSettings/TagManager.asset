@@ -9,6 +9,8 @@ TagManager:
   - Device
   - Connection
   - Target
+  - BGM_Slider
+  - SE_Slider
   layers:
   - Default
   - TransparentFX
