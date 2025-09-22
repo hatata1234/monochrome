@@ -5,6 +5,7 @@ public class ShowUIOnClick : MonoBehaviour
     public GameObject targetUI; // 表示したいUI（例：Panel）
     public GameObject PauseUI; // 表示したいUI（例：Panel）
     public GameObject TutorialUI; // 表示したいUI（例：Panel）
+    public GameObject TutorialUI2; // 表示したいUI（例：Panel）
     public GameObject OperateUI; // 表示したいUI（例：Panel）
     public GameObject SoundUI; // 表示したいUI（例：Panel）
 
@@ -48,6 +49,15 @@ public class ShowUIOnClick : MonoBehaviour
     public void CloseTutorial()
     {
         TutorialUI.SetActive(false);
+    }
+    public void ShowTutorial2()
+    {
+        TutorialUI2.SetActive(true);
+
+    }
+    public void CloseTutorial2()
+    {
+        TutorialUI2.SetActive(false);
     }
 
     public void ShowOperate()
