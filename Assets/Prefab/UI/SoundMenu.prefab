@@ -734,6 +734,7 @@ GameObject:
   - component: {fileID: 8698994219820005099}
   - component: {fileID: 4855250582803670065}
   - component: {fileID: 8882695331016931002}
+  - component: {fileID: 2812499877496575192}
   m_Layer: 5
   m_Name: SoundMenu
   m_TagString: Untagged
@@ -808,6 +809,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2812499877496575192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3788685767185389747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ba2d299e7d056f46b27848a7e0e2983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSlider: {fileID: 1413905230416081908}
+  seSlider: {fileID: 113657921257741616}
 --- !u!1 &4110660193309066957
 GameObject:
   m_ObjectHideFlags: 0
@@ -969,7 +984,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1884568994217047242}
   - component: {fileID: 1413905230416081908}
-  - component: {fileID: 4477299926210682162}
   m_Layer: 5
   m_Name: BGM_Slider
   m_TagString: BGM_Slider
@@ -1050,19 +1064,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4477299926210682162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5658293571412756304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd7fef2ab262f5945bacef6555413664, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmSlider: {fileID: 0}
 --- !u!1 &5701905880698994281
 GameObject:
   m_ObjectHideFlags: 0
