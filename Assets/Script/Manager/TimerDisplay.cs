@@ -9,7 +9,7 @@ public class TimerDisplay : MonoBehaviour
     {
         if (Timer.Instance != null)
         {
-            timerText.text = $"ƒ^ƒCƒ€: {Timer.Instance.GetFormattedTime()}";
+            timerText.text = $"TIME:{Timer.Instance.GetFormattedTime()}";
         }
     }
 }

@@ -48,7 +48,8 @@ public class ObjectPlacer2D : MonoBehaviour
     private int totalPlacedCount = 0;
     public int TotalPlacedCount => totalPlacedCount;
 
-
+    [Header("UI - 円形ゲージ")]
+    public Image radialFillImage; // UI Image (Type: Filled)
 
     public static ObjectPlacer2D FindPlacerById(string id)
     {
@@ -269,14 +270,20 @@ public class ObjectPlacer2D : MonoBehaviour
         return new Vector2(Mathf.Floor(worldPos.x) + 0.5f, Mathf.Floor(worldPos.y) + 0.5f);
     }
 
-    private void UpdateUI()
-    {
-        if (remainingBlocksText != null)
-            remainingBlocksText.text = $"配置可能ブロック： {maxBlocks - CurrentUsedBlockCount}";
+   private void UpdateUI()
+{
+    if (remainingBlocksText != null)
+        remainingBlocksText.text = $"WRITE:{maxBlocks - CurrentUsedBlockCount}/{maxBlocks}";
 
-        if (totalPlacedText != null)
-            totalPlacedText.text = $"累積配置数： {totalPlacedCount}";
+    if (totalPlacedText != null)
+        totalPlacedText.text = $"累積配置数： {totalPlacedCount}";
+
+    if (radialFillImage != null)
+    {
+        float usedRatio = (float)CurrentUsedBlockCount / maxBlocks;
+        radialFillImage.fillAmount = 1f - usedRatio; // 残りブロック数に応じて減る
     }
+}
 
     public int CurrentUsedBlockCount => CountDeletableObjects();
 
