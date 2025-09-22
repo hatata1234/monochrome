@@ -20,6 +20,10 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+       
+    }
+    private void Start()
+    {
         // 起動時に音量を反映
         ApplyVolumes();
     }
