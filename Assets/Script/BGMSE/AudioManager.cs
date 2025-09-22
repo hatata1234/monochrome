@@ -1,107 +1,63 @@
-ï»¿using UnityEngine;
-using UnityEngine.UI;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+using UnityEngine;
 using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instans;
+    public static AudioManager Instance;
 
-    [Header("Audio Sources")]
-    public AudioSource BGMSource;
-    public AudioSource SESource;
+    [SerializeField] private AudioMixer audioMixer; // AudioMixerQÆ
 
-    [Header("Audio Mixer")]
-    public AudioMixer mixer;
-
-    [Header("Sliders")]
-    public Slider BGMslider;
-    public Slider SEslider;
-
-    [Header("Audio clips")]
-    public AudioClip[] BGMs;
-    public AudioClip[] SEs;
+    [SerializeField] private GameObject seSourcePrefab; // SE‚ÌAudioSource‚ğg‚¢‚Ü‚í‚·
 
     private void Awake()
     {
-        if (Instans == null)
-        {
-            Instans = this;
-            DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-        else
+        // ƒVƒ“ƒOƒ‹ƒgƒ“‰»
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        // ‹N“®‚É‰¹—Ê‚ğ”½‰f
+        ApplyVolumes();
     }
 
-    private void Start()
+    private void PlaySE(AudioClip clip)
     {
-        // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼åˆæœŸåŒ–
-        BGMslider.value = Update_Volume.BGMsliderValue;
-        SEslider.value = Update_Volume.SEsliderValue;
+        if (clip == null) return;
 
-        BGMslider.onValueChanged.AddListener(SetBGMVolume);
-        SEslider.onValueChanged.AddListener(SetSEVolume);
+        // ˆê“I‚ÉSEÄ¶—p‚ÌAudioSource‚ğ¶¬
+        var obj = Instantiate(seSourcePrefab, transform);
+        var source = obj.GetComponent<AudioSource>();
+        source.PlayOneShot(clip);
 
-        // éŸ³é‡ã‚’åæ˜ 
-        SetBGMVolume(BGMslider.value);
-        SetSEVolume(SEslider.value);
-
-        // BGM å†ç”Ÿ
-        if (BGMs.Length > 0)
-        {
-            BGMSource.clip = BGMs[0];
-            BGMSource.loop = true;
-            BGMSource.Play();
-        }
+        // Ä¶‚ªI‚í‚Á‚½‚ç”jŠü
+        Destroy(obj, clip.length);
     }
 
-    // ã‚·ãƒ¼ãƒ³åˆ‡ã‚Šæ›¿ãˆæ™‚ã«ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼å†ãƒªãƒ³ã‚¯
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // ’l‚ğ”½‰f‚·‚éiƒV[ƒ“‘JˆÚŒã‚ÉŒÄ‚Ño‚·—pj
+    public void ApplyVolumes()
     {
-        var bgmSliderObj = GameObject.Find("BGM_Slider");
-        var seSliderObj = GameObject.Find("SE_Slider");
-
-        if (bgmSliderObj != null)
-        {
-            BGMslider = bgmSliderObj.GetComponent<Slider>();
-            BGMslider.value = Update_Volume.BGMsliderValue;
-            BGMslider.onValueChanged.RemoveAllListeners();
-            BGMslider.onValueChanged.AddListener(SetBGMVolume);
-        }
-
-        if (seSliderObj != null)
-        {
-            SEslider = seSliderObj.GetComponent<Slider>();
-            SEslider.value = Update_Volume.SEsliderValue;
-            SEslider.onValueChanged.RemoveAllListeners();
-            SEslider.onValueChanged.AddListener(SetSEVolume);
-        }
+        SetBgmVolume(SettingVariable.Instance.Data.BGMVolume);
+        SetSeVolume(SettingVariable.Instance.Data.SEVolume);
     }
 
-    // AudioMixer ã«åæ˜ 
-    public void SetBGMVolume(float value)
+    // ==== BGM ====
+    public void SetBgmVolume(float value)
     {
-        float dB = (value <= 0.0001f) ? -80f : Mathf.Log10(value) * 20f;
-        mixer.SetFloat("BGMVolume", dB);
-        Update_Volume.BGMsliderValue = value;
+        SettingVariable.Instance.Data.BGMVolume = value;
+        audioMixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20);
     }
 
-    public void SetSEVolume(float value)
+    // ==== SE ====
+    public void SetSeVolume(float value)
     {
-        float dB = (value <= 0.0001f) ? -80f : Mathf.Log10(value) * 20f;
-        mixer.SetFloat("SEVolume", dB);
-        Update_Volume.SEsliderValue = value;
-    }
-
-    public void PlaySE(int index)
-    {
-        if (index >= 0 && index < SEs.Length)
-            SESource.PlayOneShot(SEs[index]);
+        SettingVariable.Instance.Data.SEVolume = value;
+        audioMixer.SetFloat("SEVolume", Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20);
     }
 }
-
-
