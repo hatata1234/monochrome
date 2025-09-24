@@ -114,7 +114,11 @@ public class PauseManager : MonoBehaviour
 
     public void CloseTutorials()
     {
-        Time.timeScale = 1f;
+        if (!IsPaused)
+        {
+            Time.timeScale = 1f;
+        }
+        
         TutorialUI1.SetActive(false);
         TutorialUI2.SetActive(false);
         TutorialUI3.SetActive(false);

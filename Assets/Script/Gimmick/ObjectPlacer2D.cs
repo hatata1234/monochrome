@@ -273,7 +273,7 @@ public class ObjectPlacer2D : MonoBehaviour
    private void UpdateUI()
 {
     if (remainingBlocksText != null)
-        remainingBlocksText.text = $"WRITE:{maxBlocks - CurrentUsedBlockCount}/{maxBlocks}";
+        remainingBlocksText.text = $"WRITE:{maxBlocks - CurrentUsedBlockCount}";
 
     if (totalPlacedText != null)
         totalPlacedText.text = $"ó›êœîzíuêîÅF {totalPlacedCount}";

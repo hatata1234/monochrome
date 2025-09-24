@@ -40,7 +40,7 @@ public class GoalPanelController : MonoBehaviour
     {
         int stars = 1;
         if (elapsedSeconds <= 60f) stars += 1;
-        if (placedCount <= 10) stars += 1;
+        if (placedCount <= 20) stars += 1;
         return new string('š', stars) + new string('™', 3 - stars);
     }
 
