@@ -22,7 +22,7 @@ public class GoalPanelController : MonoBehaviour
         // ★/☆ 条件表示付きテキスト
         timeText.text = $"{(elapsedSeconds <= 60f ? "★" : "☆")}";
         //timeText.text = $" {(elapsedSeconds <= 60f ? "★" : "☆")}( タイム: {formattedTime} ";
-        resultPlacedText.text = $"{(count <= 10 ? "★" : "☆")}";
+        resultPlacedText.text = $"{(count <= 20 ? "★" : "☆")}";
         //resultPlacedText.text = $" {(count <= 10 ? "★" : "☆")}( 累積配置数: {count}) ";
 
         // 総合評価

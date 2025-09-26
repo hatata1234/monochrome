@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
 
     // 地面判定（Raycast）
     private bool isGrounded = false;
-    public Transform groundCheckPoint;
+    public Transform[] groundCheckPoints;  // 複数設置できる配列に変更
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
@@ -36,13 +36,19 @@ public class Player : MonoBehaviour
     {
         if (PauseManager.IsPaused || Time.timeScale == 0) return;
 
-        // 1. 接地判定は最初に行う
-        isGrounded = Physics2D.Raycast(groundCheckPoint.position, Vector2.down, groundCheckRadius, groundLayer);
+        // 複数のRaycastで地面判定
+        isGrounded = false;
+        foreach (Transform point in groundCheckPoints)
+        {
+            if (Physics2D.Raycast(point.position, Vector2.down, groundCheckRadius, groundLayer))
+            {
+                isGrounded = true;
+                break;
+            }
+        }
 
-        // 2. アニメーションフラグ更新
         anim.SetBool("isJump", !isGrounded);
 
-        // 3. 各処理
         Restart();
 
         if (alive)
@@ -52,7 +58,6 @@ public class Player : MonoBehaviour
             Jump();
         }
     }
-
     void Run()
     {
         Vector3 moveVelocity = Vector3.zero;
@@ -131,10 +136,13 @@ public class Player : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        if (groundCheckPoint != null)
+        if (groundCheckPoints != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(groundCheckPoint.position, groundCheckPoint.position + Vector3.down * groundCheckRadius);
+            foreach (var point in groundCheckPoints)
+            {
+                Gizmos.DrawLine(point.position, point.position + Vector3.down * groundCheckRadius);
+            }
         }
     }
 }

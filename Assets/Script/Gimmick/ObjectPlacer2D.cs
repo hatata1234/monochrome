@@ -23,33 +23,34 @@ public class ObjectPlacer2D : MonoBehaviour
     public Text remainingBlocksText;
     public Text totalPlacedText;
 
-    private Dictionary<Vector2, (GameObject obj, bool canDelete, bool isInitialObject)> placedObjects
-        = new Dictionary<Vector2, (GameObject, bool, bool)>();
+    [Header("プレイヤー周囲の配置制限")]
+    public Transform playerTransform;
+    public int noPlacementWidth = 3;
+    public int noPlacementHeight = 2;
+
+    [Header("識別子")]
+    public string placerId = "Placer_1";
+
+    [Header("クールダウン設定")]
+    public float collectCooldown = 1f;
+    private float lastCollectTime = -Mathf.Infinity;
+
+    [Header("回収制限時間")]
+    public float autoCollectBlockTimeout = 10f;
+
+    private int totalPlacedCount = 0;
+    public int TotalPlacedCount => totalPlacedCount;
 
     private enum Mode { None, Place, Delete }
     private Mode currentMode = Mode.None;
 
     private Vector2? lastProcessedGridPos = null;
 
+    // 状態情報付きのデータ構造に変更
+    private Dictionary<Vector2, (GameObject obj, bool canDelete, bool isInitialObject, float placedTime)>
+        placedObjects = new Dictionary<Vector2, (GameObject, bool, bool, float)>();
+
     public int MaxBlocks => maxBlocks;
-
-    [Header("プレイヤー周囲の配置制限")]
-    public Transform playerTransform;
-    public int noPlacementWidth = 3;  // X方向のブロック数（片側で1.5分 = 中心±1.5）
-    public int noPlacementHeight = 2; // Y方向のブロック数（片側で1分 = 中心±1）
-
-    [Header("識別子")]
-    public string placerId = "Placer_1";
-
-    [Header("クールダウン設定")] // ← クールダウン設定の見出し
-    public float collectCooldown = 1f; // ← クールタイムの秒数（インスペクター調整可能）
-    private float lastCollectTime = -Mathf.Infinity; // ← 最後に回収した時間
-
-    private int totalPlacedCount = 0;
-    public int TotalPlacedCount => totalPlacedCount;
-
-    [Header("UI - 円形ゲージ")]
-    public Image radialFillImage; // UI Image (Type: Filled)
 
     public static ObjectPlacer2D FindPlacerById(string id)
     {
@@ -78,7 +79,7 @@ public class ObjectPlacer2D : MonoBehaviour
                 Vector2 gridPos = ToGridPosition(obj.transform.position);
                 if (!placedObjects.ContainsKey(gridPos))
                 {
-                    placedObjects.Add(gridPos, (obj, allowDeletingInitialObjects, true));
+                    placedObjects.Add(gridPos, (obj, allowDeletingInitialObjects, true, -1f));
                 }
                 else
                 {
@@ -93,11 +94,11 @@ public class ObjectPlacer2D : MonoBehaviour
     public void RegisterPreplacedObject(GameObject obj)
     {
         obj.transform.SetParent(transform, worldPositionStays: true);
-
         Vector2 gridPos = ToGridPosition(obj.transform.position);
+
         if (!placedObjects.ContainsKey(gridPos))
         {
-            placedObjects.Add(gridPos, (obj, allowDeletingInitialObjects, true));
+            placedObjects.Add(gridPos, (obj, allowDeletingInitialObjects, true, -1f));
             Debug.Log($"AutoCreateGimmickで登録: {gridPos}");
         }
         else
@@ -110,13 +111,10 @@ public class ObjectPlacer2D : MonoBehaviour
 
     void Update()
     {
-        // --- ポーズ中なら一切のクリック処理を無効にする ---
-        if (PauseManager.IsPaused) return;
-        if (Time.timeScale == 0) return;
+        if (PauseManager.IsPaused || Time.timeScale == 0) return;
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            // クールタイム中かどうかチェック
             if (Time.time - lastCollectTime >= collectCooldown)
             {
                 CollectAllPlacedObjects();
@@ -171,21 +169,54 @@ public class ObjectPlacer2D : MonoBehaviour
 
     private void TryDeleteAt(Vector2 gridPos)
     {
-        var (obj, canDelete, _) = placedObjects[gridPos];
-        if (canDelete)
-        {
-            Destroy(obj);
-            placedObjects.Remove(gridPos);
+        var (obj, canDelete, isInitial, _) = placedObjects[gridPos];
+        // 左クリック回収は常に可能（canDeleteは使わない）
+        Destroy(obj);
+        placedObjects.Remove(gridPos);
 
-            Debug.Log($"オブジェクトを削除しました at {gridPos}");
-            UpdateUI();
-        }
-        else
-        {
-            Debug.Log("このオブジェクトは削除できません");
-        }
+        Debug.Log($"オブジェクトを削除しました at {gridPos}");
+        UpdateUI();
     }
 
+    //private void TryPlaceAt(Vector2 gridPos, Vector3 mouseWorldPos)
+    //{
+    //    if (IsNearPlayer(gridPos))
+    //    {
+    //        Debug.Log("プレイヤーの近くには配置できません");
+    //        return;
+    //    }
+
+    //    int currentPlaceableCount = CountDeletableObjects();
+    //    if (currentPlaceableCount >= maxBlocks)
+    //    {
+    //        Debug.Log("これ以上ブロックを配置できません（上限）");
+    //        return;
+    //    }
+
+    //    RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, placementLayerMask);
+    //    if (hit.collider != null && hit.collider.transform.IsChildOf(transform))
+    //    {
+    //        GameObject placedObject = Instantiate(prefabToPlace, gridPos, Quaternion.identity, transform);
+
+    //        Collider2D collider = placedObject.GetComponent<Collider2D>();
+    //        if (collider != null)
+    //        {
+    //            collider.isTrigger = setColliderAsTrigger;
+    //        }
+
+    //        float currentTime = Time.time;
+    //        placedObjects.Add(gridPos, (placedObject, true, false, currentTime));
+
+    //        totalPlacedCount++;
+    //        Debug.Log($"オブジェクトを配置しました at {gridPos}（累積: {totalPlacedCount}）");
+
+    //        UpdateUI();
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("配置できる場所ではありません（他ギミックの領域？）");
+    //    }
+    //}
     private void TryPlaceAt(Vector2 gridPos, Vector3 mouseWorldPos)
     {
         if (IsNearPlayer(gridPos))
@@ -212,9 +243,21 @@ public class ObjectPlacer2D : MonoBehaviour
                 collider.isTrigger = setColliderAsTrigger;
             }
 
-            placedObjects.Add(gridPos, (placedObject, true, false));
+            float currentTime = Time.time;
+            placedObjects.Add(gridPos, (placedObject, true, false, currentTime));
 
-            totalPlacedCount++; // ← 累積カウントを追加
+            //グリッド可視化中なら色変更
+            CreateMode createMode = FindObjectOfType<CreateMode>();
+            if (createMode != null && createMode.IsActive)
+            {
+                SpriteRenderer sr = placedObject.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.color = new Color(1f, 1f, 1f, 0.5f);
+                }
+            }
+
+            totalPlacedCount++;
             Debug.Log($"オブジェクトを配置しました at {gridPos}（累積: {totalPlacedCount}）");
 
             UpdateUI();
@@ -225,77 +268,20 @@ public class ObjectPlacer2D : MonoBehaviour
         }
     }
 
-    private bool IsNearPlayer(Vector2 gridPos)
-    {
-        if (playerTransform == null) return false;
-
-        Collider2D playerCollider = playerTransform.GetComponent<Collider2D>();
-        if (playerCollider == null) return false;
-
-        Vector2 center = playerCollider.bounds.center;
-
-        Vector2 gridCenter = ToGridPosition(center);
-
-        float dx = Mathf.Abs(gridPos.x - gridCenter.x);
-        float dy = Mathf.Abs(gridPos.y - gridCenter.y);
-
-        return dx <= noPlacementWidth * 0.5f && dy <= noPlacementHeight * 0.5f;
-    }
-    private void OnDrawGizmosSelected()
-{
-    if (playerTransform == null) return;
-
-    Collider2D playerCollider = playerTransform.GetComponent<Collider2D>();
-    if (playerCollider == null) return;
-
-    Vector2 center = ToGridPosition(playerCollider.bounds.center);
-
-    Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
-    Gizmos.DrawCube(center, new Vector3(noPlacementWidth, noPlacementHeight, 0f));
-}
-
-    private int CountDeletableObjects()
-    {
-        int count = 0;
-        foreach (var entry in placedObjects.Values)
-        {
-            if (entry.canDelete)
-                count++;
-        }
-        return count;
-    }
-
-    private Vector2 ToGridPosition(Vector3 worldPos)
-    {
-        return new Vector2(Mathf.Floor(worldPos.x) + 0.5f, Mathf.Floor(worldPos.y) + 0.5f);
-    }
-
-   private void UpdateUI()
-{
-    if (remainingBlocksText != null)
-        remainingBlocksText.text = $"WRITE:{maxBlocks - CurrentUsedBlockCount}";
-
-    if (totalPlacedText != null)
-        totalPlacedText.text = $"累積配置数： {totalPlacedCount}";
-
-    if (radialFillImage != null)
-    {
-        float usedRatio = (float)CurrentUsedBlockCount / maxBlocks;
-        radialFillImage.fillAmount = 1f - usedRatio; // 残りブロック数に応じて減る
-    }
-}
-
-    public int CurrentUsedBlockCount => CountDeletableObjects();
-
     private void CollectAllPlacedObjects()
     {
         List<Vector2> keysToRemove = new List<Vector2>();
         int collectedCount = 0;
+        float currentTime = Time.time;
 
         foreach (var kvp in placedObjects)
         {
-            var (obj, canDelete, isInitial) = kvp.Value;
-            if (!isInitial)
+            var (obj, canDelete, isInitial, placedTime) = kvp.Value;
+
+            bool isOlderThanTimeout = placedTime > 0f && (currentTime - placedTime >= autoCollectBlockTimeout);
+
+            // isInitial → 回収不可、10秒以上 → 回収不可
+            if (!isInitial && !isOlderThanTimeout)
             {
                 Destroy(obj);
                 keysToRemove.Add(kvp.Key);
@@ -320,6 +306,61 @@ public class ObjectPlacer2D : MonoBehaviour
         UpdateUI();
     }
 
+    private bool IsNearPlayer(Vector2 gridPos)
+    {
+        if (playerTransform == null) return false;
+
+        Collider2D playerCollider = playerTransform.GetComponent<Collider2D>();
+        if (playerCollider == null) return false;
+
+        Vector2 center = ToGridPosition(playerCollider.bounds.center);
+
+        float dx = Mathf.Abs(gridPos.x - center.x);
+        float dy = Mathf.Abs(gridPos.y - center.y);
+
+        return dx <= noPlacementWidth * 0.5f && dy <= noPlacementHeight * 0.5f;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (playerTransform == null) return;
+
+        Collider2D playerCollider = playerTransform.GetComponent<Collider2D>();
+        if (playerCollider == null) return;
+
+        Vector2 center = ToGridPosition(playerCollider.bounds.center);
+
+        Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
+        Gizmos.DrawCube(center, new Vector3(noPlacementWidth, noPlacementHeight, 0f));
+    }
+
+    private Vector2 ToGridPosition(Vector3 worldPos)
+    {
+        return new Vector2(Mathf.Floor(worldPos.x) + 0.5f, Mathf.Floor(worldPos.y) + 0.5f);
+    }
+
+    private int CountDeletableObjects()
+    {
+        int count = 0;
+        foreach (var entry in placedObjects.Values)
+        {
+            if (entry.canDelete)
+                count++;
+        }
+        return count;
+    }
+
+    private void UpdateUI()
+    {
+        if (remainingBlocksText != null)
+            remainingBlocksText.text = $"WRITE:{maxBlocks - CurrentUsedBlockCount}";
+
+        if (totalPlacedText != null)
+            totalPlacedText.text = $"累積配置数： {totalPlacedCount}";
+    }
+
+    public int CurrentUsedBlockCount => CountDeletableObjects();
+
     public void AddBlockCapacity(int amount)
     {
         maxBlocks += amount;
@@ -332,5 +373,19 @@ public class ObjectPlacer2D : MonoBehaviour
         maxBlocks = Mathf.Max(0, maxBlocks - amount);
         Debug.Log($"MaxBlocksが {amount} 減少されました。現在の上限: {maxBlocks}");
         UpdateUI();
+    }
+
+    public void SetPlacedObjectsColor(Color color)
+    {
+        foreach (var kvp in placedObjects)
+        {
+            var (obj, _, _, _) = kvp.Value;
+
+            SpriteRenderer renderer = obj.GetComponent<SpriteRenderer>();
+            if (renderer != null)
+            {
+                renderer.color = color;
+            }
+        }
     }
 }
