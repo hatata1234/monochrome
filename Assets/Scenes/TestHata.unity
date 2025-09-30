@@ -46833,11 +46833,9 @@ MonoBehaviour:
   remainingBlocksText: {fileID: 1201095578}
   totalPlacedText: {fileID: 0}
   playerTransform: {fileID: 0}
-  noPlacementWidth: 3
-  noPlacementHeight: 2
+  playerNoPlacementRadius: 2
   placerId: Placer_1
   collectCooldown: 1
-  autoCollectBlockTimeout: 10
 --- !u!50 &2106549932
 Rigidbody2D:
   serializedVersion: 4
