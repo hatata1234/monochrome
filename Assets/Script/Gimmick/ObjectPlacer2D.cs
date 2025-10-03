@@ -268,6 +268,8 @@ public class ObjectPlacer2D : MonoBehaviour
         }
     }
 
+
+
     private void CollectAllPlacedObjects()
     {
         List<Vector2> keysToRemove = new List<Vector2>();
@@ -387,5 +389,10 @@ public class ObjectPlacer2D : MonoBehaviour
                 renderer.color = color;
             }
         }
+    }
+
+    public bool IsBlockAtGrid(Vector2 gridPos)
+    {
+        return placedObjects.ContainsKey(gridPos);
     }
 }
