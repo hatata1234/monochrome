@@ -264,7 +264,14 @@ public class ObjectPlacer2D : MonoBehaviour
         }
         else
         {
-            Debug.Log("配置できる場所ではありません（他ギミックの領域？）");
+            if (hit.collider != null)
+            {
+                Debug.Log($"配置できません: {hit.collider.gameObject.name} にヒットしました");
+            }
+            else
+            {
+                Debug.Log("配置できる場所ではありません（何にもヒットしていない）");
+            }
         }
     }
 
