@@ -246,14 +246,24 @@ public class ObjectPlacer2D : MonoBehaviour
             float currentTime = Time.time;
             placedObjects.Add(gridPos, (placedObject, true, false, currentTime));
 
-            //グリッド可視化中なら色変更
+            // グリッド表示中は常に灰色半透明にする
             CreateMode createMode = FindObjectOfType<CreateMode>();
             if (createMode != null && createMode.IsActive)
             {
                 SpriteRenderer sr = placedObject.GetComponent<SpriteRenderer>();
                 if (sr != null)
                 {
-                    sr.color = new Color(1f, 1f, 1f, 0.5f);
+                    sr.color = new Color(0.5f, 0.5f, 0.5f, 0.5f); // 灰色半透明
+                }
+            }
+            else
+            {
+                // グリッド非表示時は世界色に合わせる
+                bool isBlackWorld = WorldFlipManager.Instance != null && WorldFlipManager.Instance.IsBlackWorld;
+                SpriteRenderer sr = placedObject.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.color = isBlackWorld ? Color.white : Color.black;
                 }
             }
 
@@ -275,8 +285,23 @@ public class ObjectPlacer2D : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (WorldFlipManager.Instance != null)
+            WorldFlipManager.Instance.OnWorldFlipped += HandleWorldFlip;
+    }
 
+    private void OnDisable()
+    {
+        if (WorldFlipManager.Instance != null)
+            WorldFlipManager.Instance.OnWorldFlipped -= HandleWorldFlip;
+    }
 
+    private void HandleWorldFlip(bool isBlackWorld)
+    {
+        Color color = isBlackWorld ? Color.white : Color.black;
+        SetPlacedObjectsColor(color);
+    }
     private void CollectAllPlacedObjects()
     {
         List<Vector2> keysToRemove = new List<Vector2>();

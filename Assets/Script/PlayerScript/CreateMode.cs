@@ -4,7 +4,6 @@ public class CreateMode : MonoBehaviour
 {
     public GameObject object_Create_Mode_Area;
 
-    // 複数の GameObject をアサインできるように List に変更
     public GameObject[] Hide_Objects;
 
     private bool isActive = false;
@@ -23,32 +22,27 @@ public class CreateMode : MonoBehaviour
                 ToggleVisibility(obj, !isActive);
             }
 
-            // ObjectPlacer2D を探す（シーンに複数ある場合はIDで絞ってもOK）
             ObjectPlacer2D placer = FindObjectOfType<ObjectPlacer2D>();
             if (placer != null)
             {
-                Color targetColor = isActive ? new Color(1f, 1f, 1f, 0.5f) : Color.black;
+                Color targetColor;
+
+                if (isActive)
+                {
+                    // グリッド表示中は灰色の半透明に固定
+                    targetColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                }
+                else
+                {
+                    // 非表示時は世界色に合わせて通常色
+                    bool isBlackWorld = WorldFlipManager.Instance != null && WorldFlipManager.Instance.IsBlackWorld;
+                    targetColor = isBlackWorld ? Color.white : Color.black;
+                }
+
                 placer.SetPlacedObjectsColor(targetColor);
             }
         }
     }
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        isActive = !isActive;
-
-    //        // 1. モード切り替え用オブジェクトの表示
-    //        object_Create_Mode_Area.SetActive(isActive);
-
-    //        // 2. 複数オブジェクトの表示切り替え
-    //        foreach (GameObject obj in Hide_Objects)
-    //        {
-    //            ToggleVisibility(obj, !isActive);
-    //        }
-    //    }
-    //}
 
     void ToggleVisibility(GameObject obj, bool visible)
     {
