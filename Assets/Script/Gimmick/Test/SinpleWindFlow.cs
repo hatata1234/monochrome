@@ -8,9 +8,10 @@ public class SimpleWindFlow : MonoBehaviour
     public GameObject windPrefab;                 // 風のセルPrefab（エフェクト等）
     public float flowInterval = 0.5f;             // 風が流れる間隔（秒）
     public Vector2 startWorldPos = Vector2.zero;  // 風の開始地点（ワールド座標）
+    public int maxHeight = 10;                     // 風の高さ上限（グリッドのY座標）
 
     [Header("ブロック用のタイルマップや設置物")]
-    public Tilemap collisionTilemap;              // ブロック用Tilemap（null可）
+    public Tilemap[] collisionTilemaps;           // 複数のブロック用Tilemapを扱うため配列に変更
 
     private Dictionary<Vector2Int, GameObject> windCells = new Dictionary<Vector2Int, GameObject>();
     private float timer = 0f;
@@ -86,14 +87,19 @@ public class SimpleWindFlow : MonoBehaviour
             windCells.Remove(pos);
         }
 
-        // 3. 風の拡散（上方向のみ）
+        // 3. 風の拡散（上方向のみ、高さ上限付き）
         List<Vector2Int> currentPositions = new List<Vector2Int>(connectedWindCells);
 
         foreach (var pos in currentPositions)
         {
             Vector2Int upPos = pos + Vector2Int.up;
 
-            // 優先度1: 上に流れる
+            // 高さ上限チェック
+            if (upPos.y > maxHeight)
+            {
+                continue;  // 上限を超えたらこれ以上拡散しない
+            }
+
             if (!IsBlocked(upPos) && !windCells.ContainsKey(upPos))
             {
                 SpawnWindCell(upPos);
@@ -118,17 +124,24 @@ public class SimpleWindFlow : MonoBehaviour
         if (objectPlacer != null && objectPlacer.IsBlockAtGrid(ToVector2(gridPos)))
             return true;
 
-        if (collisionTilemap != null && IsBlockedByTilemap(gridPos))
+        if (collisionTilemaps != null && collisionTilemaps.Length > 0 && IsBlockedByTilemaps(gridPos))
             return true;
 
         return false;
     }
 
-    bool IsBlockedByTilemap(Vector2Int gridPos)
+    bool IsBlockedByTilemaps(Vector2Int gridPos)
     {
         Vector3Int tilePos = new Vector3Int(gridPos.x, gridPos.y, 0);
-        TileBase tile = collisionTilemap.GetTile(tilePos);
-        return tile != null;
+        foreach (var tilemap in collisionTilemaps)
+        {
+            if (tilemap == null) continue;
+
+            TileBase tile = tilemap.GetTile(tilePos);
+            if (tile != null)
+                return true;
+        }
+        return false;
     }
 
     // 風セルを生成
