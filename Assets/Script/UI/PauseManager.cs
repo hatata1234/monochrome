@@ -14,10 +14,13 @@ public class PauseManager : MonoBehaviour
     public GameObject TutorialUI1;
     public GameObject TutorialUI2;
     public GameObject TutorialUI3;
+    public GameObject TutorialUI4_1;
+    public GameObject TutorialUI4_2;
 
     public GameObject Tutorial_ClearUI1;
     public GameObject Tutorial_ClearUI2;
     public GameObject Tutorial_ClearUI3;
+    public GameObject Tutorial_ClearUI4;
 
     //Retry
     public GameObject RetryUI;
@@ -30,8 +33,9 @@ public class PauseManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
 
-            if (TutorialUI.activeSelf || OperateUI.activeSelf || SoundUI.activeSelf || TutorialUI1.activeSelf || TutorialUI2.activeSelf || TutorialUI3.activeSelf 
-                || Tutorial_ClearUI1.activeSelf || Tutorial_ClearUI2.activeSelf || Tutorial_ClearUI3.activeSelf || RetryUI.activeSelf)
+            if (TutorialUI.activeSelf || OperateUI.activeSelf || SoundUI.activeSelf || TutorialUI1.activeSelf || TutorialUI2.activeSelf || TutorialUI3.activeSelf || TutorialUI4_1.activeSelf
+                 || TutorialUI4_2.activeSelf || Tutorial_ClearUI1.activeSelf || Tutorial_ClearUI2.activeSelf || Tutorial_ClearUI3.activeSelf || Tutorial_ClearUI4.activeSelf 
+                 || RetryUI.activeSelf)
             {
                 if (TutorialUI.activeSelf) CloseTutorial();
                 if (OperateUI.activeSelf) CloseOperate();
@@ -39,6 +43,8 @@ public class PauseManager : MonoBehaviour
                 if (TutorialUI1.activeSelf) CloseTutorials();
                 if (TutorialUI2.activeSelf) CloseTutorials();
                 if (TutorialUI3.activeSelf) CloseTutorials();
+                if (TutorialUI4_1.activeSelf) CloseTutorials();
+                if (TutorialUI4_2.activeSelf) CloseTutorials();
             }
             else
             {
@@ -122,6 +128,8 @@ public class PauseManager : MonoBehaviour
         TutorialUI1.SetActive(false);
         TutorialUI2.SetActive(false);
         TutorialUI3.SetActive(false);
+        TutorialUI4_1.SetActive(false);
+        TutorialUI4_2.SetActive(false);
     }
     public void CloseClear()
     {
@@ -129,5 +137,6 @@ public class PauseManager : MonoBehaviour
         Tutorial_ClearUI1.SetActive(false);
         Tutorial_ClearUI2.SetActive(false);
         Tutorial_ClearUI3.SetActive(false);
+        Tutorial_ClearUI4.SetActive(false);
     }
 }

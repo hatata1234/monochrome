@@ -3,12 +3,19 @@ using UnityEngine.UI;
 
 public class GoalPanelController : MonoBehaviour
 {
+    [Header("UI Components")]
     public GameObject goalPanel;
     public Text resultPlacedText;
     public Text evaluationText;
     public Text timeText;
+
+    [Header("IDs")]
     public string placerId = "Placer_1";
     public string stageId = "Stage1";
+
+    [Header("Clear Conditions")]
+    public float clearTimeLimit = 60f;        // クリア条件：この秒数以内
+    public int maxPlacedCount = 5;           // クリア条件：この数以下
 
     public void ShowGoalPanel()
     {
@@ -19,11 +26,9 @@ public class GoalPanelController : MonoBehaviour
         ObjectPlacer2D placer = ObjectPlacer2D.FindPlacerById(placerId);
         int count = placer != null ? placer.TotalPlacedCount : 0;
 
-        // ★/☆ 条件表示付きテキスト
-        timeText.text = $"{(elapsedSeconds <= 60f ? "★" : "☆")}";
-        //timeText.text = $" {(elapsedSeconds <= 60f ? "★" : "☆")}( タイム: {formattedTime} ";
-        resultPlacedText.text = $"{(count <= 20 ? "★" : "☆")}";
-        //resultPlacedText.text = $" {(count <= 10 ? "★" : "☆")}( 累積配置数: {count}) ";
+        // 条件に応じた表示
+        timeText.text = $"{(elapsedSeconds <= clearTimeLimit ? "★" : "☆")} タイム: {formattedTime}";
+        resultPlacedText.text = $"{(count <= maxPlacedCount ? "★" : "☆")} 累積配置数: {count}";
 
         // 総合評価
         string stars = GetEvaluation(count, elapsedSeconds);
@@ -38,16 +43,19 @@ public class GoalPanelController : MonoBehaviour
 
     string GetEvaluation(int placedCount, float elapsedSeconds)
     {
-        int stars = 1;
-        if (elapsedSeconds <= 60f) stars += 1;
-        if (placedCount <= 20) stars += 1;
+        int stars = 1; // ベース1つ
+        if (elapsedSeconds <= clearTimeLimit) stars += 1;
+        if (placedCount <= maxPlacedCount) stars += 1;
         return new string('★', stars) + new string('☆', 3 - stars);
     }
 
     int CountStars(string stars)
     {
         int count = 0;
-        foreach (char c in stars) if (c == '★') count++;
+        foreach (char c in stars)
+        {
+            if (c == '★') count++;
+        }
         return count;
     }
 
