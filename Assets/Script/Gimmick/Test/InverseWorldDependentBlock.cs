@@ -1,20 +1,24 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[RequireComponent(typeof(TilemapRenderer))]
-[RequireComponent(typeof(TilemapCollider2D))]
 public class InverseWorldDependentBlock : MonoBehaviour
 {
     private TilemapRenderer tilemapRenderer;
+    private SpriteRenderer spriteRenderer;
     private TilemapCollider2D tilemapCollider;
+    private Collider2D genericCollider;
 
+    [Header("色設定")]
     public Color colorInWhiteWorld = Color.white;
     public Color colorInBlackWorld = Color.black;
 
     private void Awake()
     {
         tilemapRenderer = GetComponent<TilemapRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         tilemapCollider = GetComponent<TilemapCollider2D>();
+        genericCollider = GetComponent<Collider2D>();
     }
 
     private void Start()
@@ -33,17 +37,26 @@ public class InverseWorldDependentBlock : MonoBehaviour
 
     private void UpdateTilemapState(bool isBlackWorld)
     {
-        if (isBlackWorld)
+        Color targetColor = isBlackWorld ? colorInBlackWorld : colorInWhiteWorld;
+        bool colliderEnabled = isBlackWorld; // 黒世界で当たり判定オン
+
+        if (tilemapRenderer != null)
         {
-            // 黒世界：黒色表示・当たり判定あり
-            tilemapRenderer.material.color = colorInBlackWorld;
-            tilemapCollider.enabled = true;
+            tilemapRenderer.material.color = targetColor;
         }
-        else
+
+        if (spriteRenderer != null)
         {
-            // 白世界：白色表示・当たり判定なし
-            tilemapRenderer.material.color = colorInWhiteWorld;
-            tilemapCollider.enabled = false;
+            spriteRenderer.color = targetColor;
+        }
+
+        if (tilemapCollider != null)
+        {
+            tilemapCollider.enabled = colliderEnabled;
+        }
+        else if (genericCollider != null)
+        {
+            genericCollider.enabled = colliderEnabled;
         }
     }
 }

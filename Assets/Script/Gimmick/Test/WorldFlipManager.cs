@@ -19,6 +19,14 @@ public class WorldFlipManager : MonoBehaviour
 
         mainCamera = Camera.main;
     }
+    private void Update()
+    {
+        // 「1」キーを押したら FlipWorld() を実行
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            FlipWorld();
+        }
+    }
 
     public void FlipWorld()
     {

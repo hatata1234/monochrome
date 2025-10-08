@@ -18,10 +18,10 @@ public class ButtonSceneChanger : MonoBehaviour
     }
     public void Stage2()
     {
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("NormalMap");
     }
     public void Stage3()
     {
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("HardMap");
     }
 }

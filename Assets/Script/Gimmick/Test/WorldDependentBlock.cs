@@ -54,13 +54,12 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[RequireComponent(typeof(Tilemap))]
-[RequireComponent(typeof(TilemapRenderer))]
-[RequireComponent(typeof(TilemapCollider2D))]
 public class WorldDependentBlock : MonoBehaviour
 {
     private TilemapRenderer tilemapRenderer;
+    private SpriteRenderer spriteRenderer;
     private TilemapCollider2D tilemapCollider;
+    private Collider2D genericCollider;
 
     [Header("êFê›íË")]
     public Color colorInWhiteWorld = Color.black;
@@ -69,7 +68,10 @@ public class WorldDependentBlock : MonoBehaviour
     private void Awake()
     {
         tilemapRenderer = GetComponent<TilemapRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         tilemapCollider = GetComponent<TilemapCollider2D>();
+        genericCollider = GetComponent<Collider2D>();
     }
 
     private void Start()
@@ -91,15 +93,27 @@ public class WorldDependentBlock : MonoBehaviour
 
     private void UpdateTilemapState(bool isBlackWorld)
     {
-        if (isBlackWorld)
+        Color targetColor = isBlackWorld ? colorInBlackWorld : colorInWhiteWorld;
+
+        if (tilemapRenderer != null)
         {
-            tilemapRenderer.material.color = colorInBlackWorld;
-            tilemapCollider.enabled = false;
+            tilemapRenderer.material.color = targetColor;
         }
-        else
+
+        if (spriteRenderer != null)
         {
-            tilemapRenderer.material.color = colorInWhiteWorld;
-            tilemapCollider.enabled = true;
+            spriteRenderer.color = targetColor;
+        }
+
+        bool colliderEnabled = !isBlackWorld;
+
+        if (tilemapCollider != null)
+        {
+            tilemapCollider.enabled = colliderEnabled;
+        }
+        else if (genericCollider != null)
+        {
+            genericCollider.enabled = colliderEnabled;
         }
     }
 }

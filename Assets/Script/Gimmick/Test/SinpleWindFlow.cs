@@ -8,13 +8,19 @@ public class SimpleWindFlow : MonoBehaviour
     public GameObject windPrefab;                 // 風のセルPrefab（エフェクト等）
     public float flowInterval = 0.5f;             // 風が流れる間隔（秒）
     public Vector2 startWorldPos = Vector2.zero;  // 風の開始地点（ワールド座標）
-    public int maxHeight = 10;                     // 風の高さ上限（グリッドのY座標）
+    public int maxHeight = 10;                    // 風の高さ上限（グリッドのY座標）
 
     [Header("ブロック用のタイルマップや設置物")]
-    public Tilemap[] collisionTilemaps;           // 複数のブロック用Tilemapを扱うため配列に変更
+    public Tilemap[] collisionTilemaps;           // 複数のブロック用Tilemap
+
+    [Header("開始遅延")]
+    public float startDelay = 2f;                 // ゲーム開始から風が出現するまでの遅延秒数
 
     private Dictionary<Vector2Int, GameObject> windCells = new Dictionary<Vector2Int, GameObject>();
     private float timer = 0f;
+
+    private float delayTimer = 0f;
+    private bool windStarted = false;
 
     private ObjectPlacer2D objectPlacer;
 
@@ -22,12 +28,30 @@ public class SimpleWindFlow : MonoBehaviour
     {
         objectPlacer = FindObjectOfType<ObjectPlacer2D>();
 
-        Vector2Int startGridPos = WorldToGridPos(startWorldPos);
-        SpawnWindCell(startGridPos);
+        // 初期風セルの生成は startDelay 経過後に行う
     }
 
     void Update()
     {
+        // まだ風が開始していない → 遅延中
+        if (!windStarted)
+        {
+            delayTimer += Time.deltaTime;
+            if (delayTimer >= startDelay)
+            {
+                Vector2Int startGridPos = WorldToGridPos(startWorldPos);
+                if (!IsBlocked(startGridPos))
+                {
+                    SpawnWindCell(startGridPos);
+                }
+
+                windStarted = true;
+                timer = 0f;
+            }
+            return;
+        }
+
+        // 通常の風の流れ処理
         timer += Time.deltaTime;
         if (timer >= flowInterval)
         {
@@ -87,35 +111,27 @@ public class SimpleWindFlow : MonoBehaviour
             windCells.Remove(pos);
         }
 
-        // 3. 風の拡散（上方向のみ、高さ上限付き）
+        // 3. 上方向への拡散（高さ制限あり）
         List<Vector2Int> currentPositions = new List<Vector2Int>(connectedWindCells);
 
         foreach (var pos in currentPositions)
         {
             Vector2Int upPos = pos + Vector2Int.up;
 
-            // 高さ上限チェック
             if (upPos.y > maxHeight)
-            {
-                continue;  // 上限を超えたらこれ以上拡散しない
-            }
+                continue;
 
             if (!IsBlocked(upPos) && !windCells.ContainsKey(upPos))
             {
                 SpawnWindCell(upPos);
             }
-
-            // 横や下には流れない
         }
     }
 
     // 流れ方向は上方向のみ
     List<Vector2Int> GetFlowDirectionsPriority()
     {
-        return new List<Vector2Int>
-        {
-            Vector2Int.up
-        };
+        return new List<Vector2Int> { Vector2Int.up };
     }
 
     // ブロック判定
